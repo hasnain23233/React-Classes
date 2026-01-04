@@ -1,32 +1,34 @@
 import './App.css'
 import Navbar from './assets/Navbar'
 import Footer from './assets/Footer'
-import React , {useState} from 'react'
+import React, { useEffect , useState } from 'react'
 
 function App() {
-  const [state , setState] = useState(5)
-  const [show , setShow] = useState(false)
-
-  const handleState = ()=>{
-    setState(state + 1)
-  }
-  const subHandleState = ()=>{
-    setState(state - 1)
-  }
-
-  const showText = ()=>{
-    setShow(!show) /// show true = false false = true
-  }
-
+  const [fetchingData , setData] = useState([])
+  useEffect(()=>{
+    const FetchingData = async ()=>{
+      const URL = await fetch('https://jsonplaceholder.typicode.com/posts')
+      const Response = await URL.json()
+      console.log(Response.data)
+      setData(Response)
+    }
+    FetchingData()
+  } , [])
   return (
     <>
-    <div className='flex items-center justify-center gap-4 h-40'>
-      <p><button onClick={handleState}>+</button></p>
-      <p className='text-2xl'>{state}</p>
-      <p><button onClick={subHandleState}>-</button></p>
-    </div>
-    <button onClick={showText}>Show More Details</button>
-    <p className={`${show === true ? 'block': 'hidden'}`}>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repudiandae cumque culpa doloremque odio expedita optio asperiores aut, soluta corporis, mollitia dolorem? Inventore, asperiores. Est cum quia beatae ut iste officia.</p>
+      <Navbar/>
+      {fetchingData.map((items)=>{
+        return(
+          <>
+          <div key={items._id}>
+            
+            <h1>{items.title}</h1>
+            <p>{items.message}</p>
+          </div>
+
+          </>
+        )
+      })}
     </>
   )
 }
